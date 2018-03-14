@@ -1,0 +1,8 @@
+{
+  "name": "ufinity",
+  "description": "ufinity pre interview project",
+  "memory": 128,
+  "timeout": 5,
+  "role": "arn:aws:iam::182614784713:role/ufinity_lambda_function",
+  "environment": {}
+}
