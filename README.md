@@ -6,22 +6,30 @@
 
 2. Lambda functions: 4 lambda functions for each 4 use case
 
-3. API gateway to process the request and return response.
+3. The 5th lambda function calls other 4 lambda function according to the api called.
+
+4. API gateway to process the request and return response.
+
+5. aws-serverless-express for node on lambda. https://github.com/awslabs/aws-serverless-express/tree/master/example
 
 The whole backend is serverless using lambda functions.
+
+The main node project is in main_node_lambda/. This node project calls other lambda functions internally to do the required job.
+
+Routing in app.js
 
 ## APIs
 
 1. Register: functions/ufinity_register_new/index.js
 
-	API: https://ifv63bdiv1.execute-api.ap-southeast-1.amazonaws.com/dev/api/register
+	API: https://8ztgr2h7e2.execute-api.ap-southeast-1.amazonaws.com/prod/register
 
 	Header: Content-type=application/json
 
 	POST: Example
 
 		{
-	    "teacher": "postman23@gmail.com",
+	    "teacher": "ufinityteacherSuper5@gmail.com",
 	    "students": [
 	      "st15@gmail.com",
 	      "st53@gmail.com",
@@ -33,7 +41,7 @@ The whole backend is serverless using lambda functions.
 
 2. CommonStudents:  functions/common/index.js
 
-	API:https://ifv63bdiv1.execute-api.ap-southeast-1.amazonaws.com/dev/api/commonstudents
+	API: https://8ztgr2h7e2.execute-api.ap-southeast-1.amazonaws.com/prod/common
 
 	Constraint: The key of query param strings should be different.
 
@@ -41,13 +49,13 @@ The whole backend is serverless using lambda functions.
 
 	GET:Example
 
-	https://ifv63bdiv1.execute-api.ap-southeast-1.amazonaws.com/dev/api/commonstudents?teacher3=postman22&teacher4=lambdateacher9
+	https://8ztgr2h7e2.execute-api.ap-southeast-1.amazonaws.com/prod/common?teacher1=ufinityteacherSuper5&teacher2=ufinityteacherSuper6	
 
 	Keys here are teacher3 and teacher4. These keys can be any string value.
 
 3. Suspend:	functions/suspend/index.js
 
-	API: https://ifv63bdiv1.execute-api.ap-southeast-1.amazonaws.com/dev/api/suspend
+	API: https://8ztgr2h7e2.execute-api.ap-southeast-1.amazonaws.com/prod/suspend
 
 	Header: Content-type=apllication/json
 
@@ -58,7 +66,7 @@ The whole backend is serverless using lambda functions.
 		}
 
 4. Retreive Notifications:  functions/notify/index.js
-	API:  https://ifv63bdiv1.execute-api.ap-southeast-1.amazonaws.com/dev/api/retrievefornotifications
+	API:  https://8ztgr2h7e2.execute-api.ap-southeast-1.amazonaws.com/prod/notify
 
 	Header: Content-type=application/json
 

@@ -3,7 +3,10 @@ exports.handle = function (event, context, callback) {
     //console.log("event.path: " + event.path);
     
     // For api gateway JSON.parse
-    let body = JSON.parse(event.body);
+    //let body = JSON.parse(event.body);
+    // For invocation from another lambda function
+    //let body = JSON.parse(event);
+    let body = event;
     // let body = event.body;
     let teacher_id = body["teacher"];
     let student_id = body["students"];
@@ -52,10 +55,11 @@ exports.handle = function (event, context, callback) {
             console.log("Error1: ",JSON.stringify(res, null, 2))
             if(res.rowCount != 0){
                 console.log("Already Exits:", JSON.stringify(err, null, 2));
+                context.succeed(JSON.stringify(["One or more relation Already Exist"], null, 2))
                 callback(null, {"statusCode": 500, "body": JSON.stringify(["One or more relation Already Exist"], null, 2),"isBase64Encoded": false, "headers": {}});
                 client.end()
-                return;
-            }
+                return 1;
+            }else{
             // If the relation does not exist then only insert. We dont want duplicate relation
             client.end()
             let client2 = new pg.Client(conn)
@@ -70,16 +74,18 @@ exports.handle = function (event, context, callback) {
             client2.query(query, function(err, res){
                 if (err) {
                     console.error("Unable to insert item. Error JSON:", JSON.stringify(err, null, 2));
+                    context.succeed(JSON.stringify(err, null, 2))
                     callback(null, {"statusCode": 504,"body": JSON.stringify(err, null, 2), "isBase64Encoded": false, "headers": {}})
                     client2.end()
                     return 1
                 } else {
                     console.log("GetItem succeeded:", JSON.stringify(res, null, 2));
+                    context.succeed(JSON.stringify(["Success"], null, 2))
                     callback(null, {"statusCode": 200,"body": JSON.stringify(["Success"], null, 2), "isBase64Encoded": false, "headers": {}})
                     client2.end()
             }
             });
-        }
+        }}
         });
     //callback(null, {"statusCode": 200,"body": JSON.stringify({}, null, 2), "isBase64Encoded": false, "headers": {}})
     });

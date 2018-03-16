@@ -2,8 +2,9 @@ var pg = require("pg")
 exports.handle = function (event, context, callback) {
     // console.log("event.path: " + event.path);
     
-    let body = JSON.parse(event.body);
-    // let body = event.body;
+    // let body = JSON.parse(event.body);
+    // for invocation from another lambda
+    let body = event;
     let student_id = body["student"];
 
     var conn = {
@@ -36,11 +37,17 @@ exports.handle = function (event, context, callback) {
     client.query(query, function(err, res){
         if (err) {
             console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+            context.succeed(JSON.stringify(err, null, 2))
             callback(null, {"statusCode": 500, "body": JSON.stringify(err, null, 2),"isBase64Encoded": false, "headers": {}})
         } else {
+            if( 0 == res['rowCount'] ){
+                context.succeed(JSON.stringify({"status": "Doesnt exist"}, null, 2))
+                callback(null, {"statusCode": 200, "body": JSON.stringify({"status": "Doesnt exist"}, null, 2),"isBase64Encoded": false, "headers": {}})
+            }
             //console.log("GetItem succeeded:", JSON.stringify(res, null, 2));
         client.end()
         }
+        context.succeed(JSON.stringify({"status": "success"}, null, 2))
         callback(null, {"statusCode": 200, "body": JSON.stringify({"status": "success"}, null, 2),"isBase64Encoded": false, "headers": {}})
     });
 }

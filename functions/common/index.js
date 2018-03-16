@@ -5,7 +5,9 @@ exports.handle = function (event, context, callback) {
     //let body = JSON.parse(event.body);
     //var teachers = []
     //let body = JSON.parse(event.queryStringParameters);
-    let body = event.queryStringParameters;
+    // let body = event.queryStringParameters;
+    // Invocation from another lambda
+    let body = event;
     var keys = Object.keys(body);
     var teachers = keys.map(function(v) { return body[v]; });
     //let teachers = body["teachers"];
@@ -42,6 +44,7 @@ exports.handle = function (event, context, callback) {
     client.query(query, function(err, res){
         if (err) {
             console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+            context.succeed(JSON.stringify(err, null, 2));
             callback(null, {"statusCode": 500, "body": JSON.stringify(err, null, 2),"isBase64Encoded": false, "headers": {}})
             client.end()
             return 1
@@ -53,7 +56,7 @@ exports.handle = function (event, context, callback) {
                 common_list.push(arr[i]['studentid'])
             }
             if(1 == teachers.length){
-                // For one teacher show all students
+                context.succeed(JSON.stringify(common_list, null, 2));
                 callback(null, {"statusCode": 200, "body": JSON.stringify(common_list, null, 2),"isBase64Encoded": false, "headers": {}})
                 client.end()
                 return 1
@@ -91,6 +94,7 @@ exports.handle = function (event, context, callback) {
                     console.log("list common: ", JSON.stringify(list_common, null,2))
                     client2.end()
                     if( index == teachers.length){
+                        context.succeed(JSON.stringify(new_list, null, 2));
                         callback(null, {"statusCode": 200, "body": JSON.stringify(new_list, null, 2),"isBase64Encoded": false, "headers": {}})
                         return list_common
                     }
