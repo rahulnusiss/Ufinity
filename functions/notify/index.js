@@ -39,7 +39,8 @@ exports.handle = function (event, context, callback) {
     client.query(query, function(err, res){
         if (err) {
             console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-            context.succeed(JSON.stringify(err, null, 2));
+            //context.succeed(JSON.stringify(err, null, 2));
+            context.succeed(err);
             callback(null, {"statusCode": 500, "body": JSON.stringify(err, null, 2),"isBase64Encoded": false, "headers": {}});
             client.end()
             return 1
@@ -49,7 +50,8 @@ exports.handle = function (event, context, callback) {
         var response = function(email_list, index){
             // Add all student under teacher to list
             if ( (index) == res['rowCount']){
-                context.succeed(JSON.stringify(email_list, null, 2));
+                // context.succeed(JSON.stringify(email_list, null, 2));
+                context.succeed(email_list);
                 callback(null, {"statusCode": 200, "body": JSON.stringify(email_list, null, 2),"isBase64Encoded": false, "headers": {}})
                 return email_list;
             }

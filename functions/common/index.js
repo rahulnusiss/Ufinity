@@ -44,7 +44,8 @@ exports.handle = function (event, context, callback) {
     client.query(query, function(err, res){
         if (err) {
             console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-            context.succeed(JSON.stringify(err, null, 2));
+            //context.succeed(JSON.stringify(err, null, 2));
+            context.succeed(err);
             callback(null, {"statusCode": 500, "body": JSON.stringify(err, null, 2),"isBase64Encoded": false, "headers": {}})
             client.end()
             return 1
@@ -56,7 +57,8 @@ exports.handle = function (event, context, callback) {
                 common_list.push(arr[i]['studentid'])
             }
             if(1 == teachers.length){
-                context.succeed(JSON.stringify(common_list, null, 2));
+                //context.succeed(JSON.stringify(common_list, null, 2));
+                context.succeed(common_list);
                 callback(null, {"statusCode": 200, "body": JSON.stringify(common_list, null, 2),"isBase64Encoded": false, "headers": {}})
                 client.end()
                 return 1
@@ -94,7 +96,8 @@ exports.handle = function (event, context, callback) {
                     console.log("list common: ", JSON.stringify(list_common, null,2))
                     client2.end()
                     if( index == teachers.length){
-                        context.succeed(JSON.stringify(new_list, null, 2));
+                        // context.succeed(JSON.stringify(new_list, null, 2));
+                        context.succeed(new_list);
                         callback(null, {"statusCode": 200, "body": JSON.stringify(new_list, null, 2),"isBase64Encoded": false, "headers": {}})
                         return list_common
                     }

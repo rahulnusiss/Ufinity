@@ -47,6 +47,7 @@ exports.handle = function (event, context, callback) {
         client.query(q, function(err, res){
             if(err){
                 console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+                context.succeed(err)
                 callback(null, {"statusCode": 500, "body": JSON.stringify(err, null, 2),"isBase64Encoded": false, "headers": {}});
                 client.end()
                 return 1
@@ -55,7 +56,8 @@ exports.handle = function (event, context, callback) {
             console.log("Error1: ",JSON.stringify(res, null, 2))
             if(res.rowCount != 0){
                 console.log("Already Exits:", JSON.stringify(err, null, 2));
-                context.succeed(JSON.stringify(["One or more relation Already Exist"], null, 2))
+                // context.succeed(JSON.stringify(["One or more relation Already Exist"], null, 2))
+                context.succeed(["One or more relation Already Exist"])
                 callback(null, {"statusCode": 500, "body": JSON.stringify(["One or more relation Already Exist"], null, 2),"isBase64Encoded": false, "headers": {}});
                 client.end()
                 return 1;
@@ -74,13 +76,15 @@ exports.handle = function (event, context, callback) {
             client2.query(query, function(err, res){
                 if (err) {
                     console.error("Unable to insert item. Error JSON:", JSON.stringify(err, null, 2));
-                    context.succeed(JSON.stringify(err, null, 2))
+                    //context.succeed(JSON.stringify(err, null, 2))
+                    context.succeed(err)
                     callback(null, {"statusCode": 504,"body": JSON.stringify(err, null, 2), "isBase64Encoded": false, "headers": {}})
                     client2.end()
                     return 1
                 } else {
                     console.log("GetItem succeeded:", JSON.stringify(res, null, 2));
-                    context.succeed(JSON.stringify(["Success"], null, 2))
+                    //context.succeed(JSON.stringify(["Success"], null, 2))
+                    context.succeed(["Success"])
                     callback(null, {"statusCode": 200,"body": JSON.stringify(["Success"], null, 2), "isBase64Encoded": false, "headers": {}})
                     client2.end()
             }
